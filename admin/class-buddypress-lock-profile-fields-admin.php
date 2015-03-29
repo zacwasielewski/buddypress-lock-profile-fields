@@ -100,4 +100,36 @@ class Buddypress_Lock_Profile_Fields_Admin {
 
 	}
 
+	public function register_admin_menu() {
+
+    add_options_page(
+      __('Lock BuddyPress Profile Fields','buddypress-lock-profile-fields'),
+      __('Lock BuddyPress Profile Fields','buddypress-lock-profile-fields'),
+      'manage_options',
+      'buddypress-lock-profile-fields',
+      array( $this, 'admin_settings_page' )
+    );
+	
+	}
+	
+	public function register_admin_settings() {
+	  
+    register_setting( 'buddypress-lock-profile-fields', 'locked_fields' );
+
+    // set default values
+    add_option( 'locked_fields', array() );
+
+	}
+
+  public function admin_settings_page() {
+    $html = $this->get_partial( 'buddypress-lock-profile-fields-settings.php', array( 'plugin_admin' => $this ) );
+    echo $html;
+  }
+
+	private function get_partial( $file, $variables = '' ) {
+		$path = plugin_dir_path( __FILE__ ) . 'partials/' . $file ;
+	  $partial = get_include_contents( $path, $variables );
+	  return $partial;
+	}
+
 }

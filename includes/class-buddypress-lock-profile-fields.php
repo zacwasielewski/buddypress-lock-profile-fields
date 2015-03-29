@@ -154,6 +154,8 @@ class Buddypress_Lock_Profile_Fields {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_admin_settings' );
 
 	}
 
@@ -168,9 +170,8 @@ class Buddypress_Lock_Profile_Fields {
 
 		$plugin_public = new Buddypress_Lock_Profile_Fields_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+    $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+    $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
     $this->loader->add_action( 'xprofile_screen_edit_profile', $this, 'add_filters_to_lock_profile_edit_fields');
     $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $plugin_public, 'disable_locked_profile_fields' );
 

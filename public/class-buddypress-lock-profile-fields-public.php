@@ -101,9 +101,7 @@ class Buddypress_Lock_Profile_Fields_Public {
 	}
 
   public function get_locked_profile_fields() {
-    return array(
-      'ZIP', 'Phone'
-    );
+    return get_option('locked_fields');
   }
 
   public function exclude_locked_field_ids( $ids_string ) {
@@ -112,12 +110,14 @@ class Buddypress_Lock_Profile_Fields_Public {
     return implode(',',array_diff($ids, $locked_ids));
   }
 
+  /*
   public function modify_locked_profile_field_type( $type ) {
     if ($this->is_the_profile_field_locked()) {
       //return 'locked';
     }
     return $type;
   }
+  */
 
   public function disable_locked_profile_fields( $attributes ) {
     if ($this->is_the_profile_field_locked()) {
