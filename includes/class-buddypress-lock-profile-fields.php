@@ -156,6 +156,7 @@ class Buddypress_Lock_Profile_Fields {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_admin_settings' );
+		$this->loader->add_action( 'bp_members_admin_update_user', $plugin_admin, 'exclude_locked_field_ids_from_POST' );
 
 	}
 
@@ -172,9 +173,8 @@ class Buddypress_Lock_Profile_Fields {
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $plugin_public, 'exclude_locked_field_ids' );
-    //$this->loader->add_action( 'xprofile_screen_edit_profile', $this, 'add_filters_to_lock_profile_edit_fields');
-    $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $plugin_public, 'disable_locked_profile_fields' );
+    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $this, 'exclude_locked_field_ids' );
+    $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $this, 'disable_locked_profile_fields' );
 
 	}
 
@@ -217,5 +217,53 @@ class Buddypress_Lock_Profile_Fields {
 	public function get_version() {
 		return $this->version;
 	}
+
+
+
+  public function get_locked_profile_fields() {
+    return get_option('locked_fields');
+  }
+
+  public function disable_locked_profile_fields( $attributes ) {
+    if ($this->is_the_profile_field_locked()) {
+      $attributes['disabled'] = 'disabled';
+      $attributes['readonly'] = 'readonly';
+    }
+    return $attributes;
+  }
+
+  public function exclude_locked_field_ids( $ids_string ) {
+    $locked_ids = $this->get_locked_field_ids( $this->get_locked_profile_fields() );
+    $ids = explode(',',$ids_string);
+    return implode(',',array_diff($ids, $locked_ids));
+  }
+
+  private function get_locked_field_ids( $locked_field_names ) {
+    $ids = array();
+
+    if ( bp_has_profile() ):
+      while ( bp_profile_groups() ): bp_the_profile_group();
+        //if ( bp_profile_group_has_fields() ) :
+          while ( bp_profile_fields() ) : bp_the_profile_field();
+            $field_name = bp_get_the_profile_field_name();
+            if ( in_array($field_name, $locked_field_names )) {
+              $ids[] = bp_get_the_profile_field_id();
+            } 
+          endwhile;
+        //endif;
+      endwhile;
+    endif;
+
+    return $ids;
+  }
+  
+  private function is_the_profile_field_locked() {
+    $locked_field_names = $this->get_locked_profile_fields();
+    $field_name = bp_get_the_profile_field_name();
+    if ( in_array($field_name, $locked_field_names )) {
+      return true;
+    }
+    return false;
+  }
 
 }
