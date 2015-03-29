@@ -16,7 +16,7 @@
  * Plugin Name:       Lock BuddyPress Profile Fields
  * Plugin URI:        http://github.com/zacwasielewski/buddypress-lock-profile-fields
  * Description:       Lock editing of specific BuddyPress profile fields.
- * Version:           0.1.0
+ * Version:           0.2.0
  * Author:            Zac Wasielewski
  * Author URI:        http://wasielewski.org
  * License:           GPL-2.0+
