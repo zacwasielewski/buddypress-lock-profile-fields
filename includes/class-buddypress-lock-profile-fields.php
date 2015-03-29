@@ -172,18 +172,10 @@ class Buddypress_Lock_Profile_Fields {
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-    $this->loader->add_action( 'xprofile_screen_edit_profile', $this, 'add_filters_to_lock_profile_edit_fields');
+    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $plugin_public, 'exclude_locked_field_ids' );
+    //$this->loader->add_action( 'xprofile_screen_edit_profile', $this, 'add_filters_to_lock_profile_edit_fields');
     $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $plugin_public, 'disable_locked_profile_fields' );
 
-	}
-	
-	public function add_filters_to_lock_profile_edit_fields() {
-
-		$plugin_public = new Buddypress_Lock_Profile_Fields_Public( $this->get_plugin_name(), $this->get_version() );
-
-    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $plugin_public, 'exclude_locked_field_ids' );
-    $this->loader->add_filter( 'bp_the_profile_field_type', $plugin_public, 'modify_locked_profile_field_type' );
-	
 	}
 
 	/**
