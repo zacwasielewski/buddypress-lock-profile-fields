@@ -100,42 +100,4 @@ class Buddypress_Lock_Profile_Fields_Public {
 
 	}
 
-  public function get_locked_profile_fields() {
-    return get_option('locked_fields');
-  }
-
-  public function exclude_locked_field_ids( $ids_string ) {
-    $locked_ids = $this->get_locked_field_ids( $this->get_locked_profile_fields() );
-    $ids = explode(',',$ids_string);
-    return implode(',',array_diff($ids, $locked_ids));
-  }
-
-  public function disable_locked_profile_fields( $attributes ) {
-    if ($this->is_the_profile_field_locked()) {
-      $attributes['disabled'] = 'disabled';
-      $attributes['readonly'] = 'readonly';
-    }
-    return $attributes;
-  }
-
-  private function get_locked_field_ids( $locked_field_names ) {
-    $ids = array();
-    while ( bp_profile_fields() ): bp_the_profile_field();
-      $field_name = bp_get_the_profile_field_name();
-      if ( in_array($field_name, $locked_field_names )) {
-        $ids[] = bp_get_the_profile_field_id();
-      }
-    endwhile;        
-    return $ids;
-  }
-
-  private function is_the_profile_field_locked() {
-    $locked_field_names = $this->get_locked_profile_fields();
-    $field_name = bp_get_the_profile_field_name();
-    if ( in_array($field_name, $locked_field_names )) {
-      return true;
-    }
-    return false;
-  }
-
 }

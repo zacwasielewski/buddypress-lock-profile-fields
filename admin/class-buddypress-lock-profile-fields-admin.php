@@ -99,6 +99,24 @@ class Buddypress_Lock_Profile_Fields_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-lock-profile-fields-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+	
+	public function exclude_locked_field_ids_from_POST() {
+
+		/**
+		 * BuddyPress doesn't give us a hook to modify the field_ids that are submitted
+		 * on a profile update, so we need to resort to this ugggggly hack.
+		 *
+		 */
+
+		$field_ids = array();
+		$plugin = new Buddypress_Lock_Profile_Fields();
+    
+    foreach ( $_POST['field_ids'] as $k => $ids_string ) {
+      $field_ids[$k] = $plugin->exclude_locked_field_ids( $ids_string );
+    }    
+		$_POST['field_ids'] = $field_ids;
+    
+	}
 
 	public function register_admin_menu() {
 

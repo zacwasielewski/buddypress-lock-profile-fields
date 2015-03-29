@@ -73,6 +73,7 @@ class Buddypress_Lock_Profile_Fields {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_global_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -140,6 +141,20 @@ class Buddypress_Lock_Profile_Fields {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
+	
+	/**
+	 * Register all of the hooks related to both the public-facing and admin area
+	 * functionality of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_global_hooks() {
+
+    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $this, 'exclude_locked_field_ids' );
+    $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $this, 'disable_the_field_if_locked' );
+
+	}
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -156,6 +171,7 @@ class Buddypress_Lock_Profile_Fields {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_admin_menu' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_admin_settings' );
+		$this->loader->add_action( 'bp_members_admin_update_user', $plugin_admin, 'exclude_locked_field_ids_from_POST' );
 
 	}
 
@@ -172,9 +188,6 @@ class Buddypress_Lock_Profile_Fields {
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-    $this->loader->add_filter( 'bp_get_the_profile_field_ids', $plugin_public, 'exclude_locked_field_ids' );
-    //$this->loader->add_action( 'xprofile_screen_edit_profile', $this, 'add_filters_to_lock_profile_edit_fields');
-    $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $plugin_public, 'disable_locked_profile_fields' );
 
 	}
 
@@ -217,5 +230,34 @@ class Buddypress_Lock_Profile_Fields {
 	public function get_version() {
 		return $this->version;
 	}
+
+
+  public function disable_the_field_if_locked( $attributes ) {
+    if ( $this->is_the_field_locked() ) {
+      $attributes['disabled'] = 'disabled';
+      $attributes['readonly'] = 'readonly';
+    }
+    return $attributes;
+  }
+
+  public function exclude_locked_field_ids( $ids_string ) {
+    $ids = array_diff(
+      explode(',',$ids_string),
+      $this->get_locked_field_ids( $this->get_locked_fields() )
+    );
+    return implode(',', $ids);
+  }
+
+  private function get_locked_fields() {
+    return get_option('locked_fields');
+  }
+
+  private function get_locked_field_ids( $locked_field_names ) {
+    return array_map('xprofile_get_field_id_from_name', $locked_field_names);
+  }
+  
+  private function is_the_field_locked() {
+    return in_array( bp_get_the_profile_field_name(), $this->get_locked_fields() );
+  }
 
 }

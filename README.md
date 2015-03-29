@@ -34,11 +34,16 @@ Usage
 To-do
 -----
 
+* Disable locked radio and checkbox controls (changes to them are not saved, so this is more cosmetic than functional).
 * Test, test, test. This plugin likely fails or misbehaves for certain edge-cases.
 
 
 Changelog
 ---------
+
+### 0.3.0 ###
+* Display all profile groups on plugin settings page.
+* Bug fixes and refactoring.
 
 ### 0.2.1 ###
 * Prevent locked fields from being overwritten with blank data on form submit.

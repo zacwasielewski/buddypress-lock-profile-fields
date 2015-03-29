@@ -25,31 +25,47 @@
     
     <?php $locked_fields = get_option('locked_fields'); ?>
     
-    <!--<h3 class="title"></h3>-->
+    <h3 class="title">Locked Fields</h3>
     <table class="form-table">
-      <tr valign="top">
-        <th scope="row">Locked Fields</th>
-        <td>
+      <?php
 
-					<?php if ( bp_is_active( 'xprofile' ) ) : if ( bp_has_profile( array( 'profile_group_id' => 1, 'fetch_field_data' => false ) ) ) : while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
-            <?php while ( bp_profile_fields() ): bp_the_profile_field(); ?>
+        $groups = bp_xprofile_get_groups( array(
+          'fetch_fields' => true
+        ) );
 
-              <?php if ( bp_field_has_data() ): ?>
+        foreach ( $groups as $group ):
+        
+          ?>
+          <tr valign="top">
+            <th scope="row"><?php echo $group->name ?></th>
+            <td>
+            <?php
+
+            if ( !empty( $group->fields ) ):
+              foreach ( $group->fields as $field ):
+                $field = new BP_XProfile_Field( $field->id );
+                $is_locked = in_array( $field->name, $locked_fields );
+                ?>
                 <label>
                   <input
                     type="checkbox"
                     name="locked_fields[]"
-                    <?php if (in_array( bp_get_the_profile_field_name(), $locked_fields )) echo 'checked'; ?>
-                    value="<?php bp_the_profile_field_name() ?>">
-                  <?php bp_the_profile_field_name() ?>
+                    <?php if ($is_locked) echo 'checked'; ?>
+                    value="<?php echo $field->name ?>">
+                  <?php echo $field->name ?>
                 </label><br>
-              <?php endif; ?>
+                <?php
+              endforeach;
+            endif;
+            ?>
 
-            <?php endwhile; ?>          
-          <?php endwhile; endif; endif; ?>
-                
-        </td>
-      </tr>
+            </td>
+          </tr>
+          <?php
+        
+        endforeach;
+
+      ?>                
     </table>
 
     <?php submit_button(); ?>    
