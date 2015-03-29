@@ -34,6 +34,7 @@ Usage
 To-do
 -----
 
+* Disable locked radio and checkbox controls (changes to them are not saved, so this is more cosmetic than functional).
 * Test, test, test. This plugin likely fails or misbehaves for certain edge-cases.
 
 
