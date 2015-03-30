@@ -34,8 +34,9 @@ Usage
 To-do
 -----
 
-* Disable locked radio and checkbox controls (changes to them are not saved, so this is more cosmetic than functional).
-* Test, test, test. This plugin likely fails or misbehaves for certain edge-cases.
+* BUG: Disable UI for locked radio and checkbox controls (changes are currently not saved, so this is not a critical bug).
+* Allow Administrators to edit locked user profile data
+* Integration and unit tests.
 
 
 Changelog
