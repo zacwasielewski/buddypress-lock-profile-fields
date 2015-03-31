@@ -153,6 +153,7 @@ class Buddypress_Lock_Profile_Fields {
 
     $this->loader->add_filter( 'bp_get_the_profile_field_ids', $this, 'exclude_locked_field_ids' );
     $this->loader->add_filter( 'bp_xprofile_field_edit_html_elements', $this, 'disable_the_field_if_locked' );
+    $this->loader->add_filter( 'bp_core_screen_signup', $this, 'unlock_fields_on_register_form' );
 
 	}
 
@@ -230,7 +231,12 @@ class Buddypress_Lock_Profile_Fields {
 	public function get_version() {
 		return $this->version;
 	}
+	
 
+  public function unlock_fields_on_register_form() {    
+    remove_filter( 'bp_get_the_profile_field_ids', array( $this, 'exclude_locked_field_ids' ));
+    remove_filter( 'bp_xprofile_field_edit_html_elements', array( $this, 'disable_the_field_if_locked' ));
+  }
 
   public function disable_the_field_if_locked( $attributes ) {
     if ( $this->is_the_field_locked() ) {
