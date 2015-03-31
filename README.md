@@ -42,6 +42,9 @@ To-do
 Changelog
 ---------
 
+### 0.3.1 ###
+* Don't lock fields on signup form.
+
 ### 0.3.0 ###
 * Display all profile groups on plugin settings page.
 * Bug fixes and refactoring.
